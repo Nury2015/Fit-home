@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  Keyboard,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { Picker } from "@react-native-picker/picker";
 
 export default function CalculadoraNutricion() {
@@ -37,99 +45,119 @@ export default function CalculadoraNutricion() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Calculadora Nutricional</Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Calculadora Nutricional</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Peso (kg)"
-        keyboardType="numeric"
-        value={peso}
-        onChangeText={setPeso}
-      />
+        <Text style={styles.label}>Peso (kg)</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          value={peso}
+          onChangeText={setPeso}
+          returnKeyType="done"
+          onSubmitEditing={Keyboard.dismiss}
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Altura (cm)"
-        keyboardType="numeric"
-        value={altura}
-        onChangeText={setAltura}
-      />
+        <Text style={styles.label}>Altura (cm)</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          value={altura}
+          onChangeText={setAltura}
+          returnKeyType="done"
+          onSubmitEditing={Keyboard.dismiss}
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Edad"
-        keyboardType="numeric"
-        value={edad}
-        onChangeText={setEdad}
-      />
+        <Text style={styles.label}>Edad</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          value={edad}
+          onChangeText={setEdad}
+          returnKeyType="done"
+          onSubmitEditing={Keyboard.dismiss}
+        />
 
-      <Text style={styles.label}>Objetivo:</Text>
-      <View style={styles.pickerContainer}>
-        <Picker
-          selectedValue={objetivo}
-          onValueChange={(itemValue) => setObjetivo(itemValue)}
-          style={{ height: 50, width: 250 }} // Ajusta el tamaño si es necesario
-          mode="dropdown" // Cambia a "dialog" si sigue sin funcionar
-        >
-          <Picker.Item label="Mantenimiento" value="Mantenimiento" />
-          <Picker.Item label="Aumento" value="Aumento" />
-          <Picker.Item label="Pérdida" value="Pérdida" />
-        </Picker>
-      </View>
-
-      <Text style={styles.label}>Nivel de actividad:</Text>
-      <View style={styles.pickerContainer}>
-        <Picker
-          selectedValue={actividad}
-          onValueChange={(itemValue) => setActividad(itemValue)}
-          style={styles.picker}
-          mode="dropdown"
-        >
-          <Picker.Item label="Selecciona tu actividad..." value="" />
-          <Picker.Item label="Sedentario" value="Sedentario" />
-          <Picker.Item label="Ligero" value="Ligero" />
-          <Picker.Item label="Moderado" value="Moderado" />
-          <Picker.Item label="Activo" value="Activo" />
-          <Picker.Item label="Muy Activo" value="Muy Activo" />
-        </Picker>
-      </View>
-
-      <Button title="Calcular" onPress={calcular} />
-
-      {calorias && proteina && (
-        <View style={styles.resultados}>
-          <Text style={styles.resultadoText}>
-            Necesitas {calorias} calorías al día.
-          </Text>
-          <Text style={styles.resultadoText}>
-            Necesitas {proteina} gramos de proteína al día.
-          </Text>
+        <Text style={styles.label}>Objetivo:</Text>
+        <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={objetivo}
+            onValueChange={(itemValue) => setObjetivo(itemValue)}
+            style={styles.picker}
+            mode="dropdown"
+          >
+            <Picker.Item label="Mantenimiento del peso" value="Mantenimiento" />
+            <Picker.Item label="Aumento de masa muscular" value="Aumento" />
+            <Picker.Item label="Pérdida de peso" value="Pérdida" />
+          </Picker>
         </View>
-      )}
-    </View>
+
+        <Text style={styles.label}>Nivel de actividad:</Text>
+        <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={actividad}
+            onValueChange={(itemValue) => setActividad(itemValue)}
+            style={styles.picker}
+            mode="dropdown"
+          >
+            <Picker.Item label="Selecciona tu actividad..." value="" />
+            <Picker.Item label="Sedentario" value="Sedentario" />
+            <Picker.Item label="Ligero" value="Ligero" />
+            <Picker.Item label="Moderado" value="Moderado" />
+            <Picker.Item label="Activo" value="Activo" />
+            <Picker.Item label="Muy Activo" value="Muy Activo" />
+          </Picker>
+        </View>
+
+        <Button title="Calcular" onPress={calcular} />
+
+        {calorias && proteina && (
+          <View style={styles.resultados}>
+            <Text style={styles.resultadoText}>
+              Necesitas consumir al día {calorias} calorías 
+            </Text>
+            <Text style={styles.resultadoText}>
+              y {proteina} gramos de proteína.
+            </Text>
+          </View>
+        )}
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2},
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+    width: "90%",
+    marginVertical: 20,
+    paddingLeft: 30,
   },
+
   title: {
     fontSize: 22,
     fontWeight: "bold",
-    marginBottom: 10,
+    marginBottom: 30,
+    textAlign: "center",
   },
   input: {
-    width: "80%",
+    width: "100%",
     borderWidth: 1,
     borderColor: "#ccc",
     padding: 10,
     marginBottom: 10,
+    marginTop: 5,
     borderRadius: 5,
     textAlign: "center",
   },
@@ -137,29 +165,34 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginTop: 10,
+    textAlign: "left",
     alignSelf: "flex-start",
+     // Cambiar de "right" a "flex-start" para alinear a la izquierda
   },
+  
   pickerContainer: {
-    width: "80%",
+    width: "100%",
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 5,
-    marginBottom: 10,
+    marginBottom: 20,
+    marginTop: 10,
     backgroundColor: "#fff",
-    // overflow: "hidden", // IMPORTANTE para que se vea bien en Android
+    overflow: "hidden",
   },
   picker: {
-    width: 250,
+    width: "100%",
   },
   resultados: {
-    marginTop: 20,
+    alignItems: "center",
+    marginTop:30,
     padding: 10,
     backgroundColor: "#f8f8f8",
     borderRadius: 5,
-    alignItems: "center",
   },
   resultadoText: {
     fontSize: 16,
     fontWeight: "bold",
+    color: "#5682f3", 
   },
 });
