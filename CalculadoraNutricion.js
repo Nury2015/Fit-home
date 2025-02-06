@@ -10,14 +10,12 @@ import {
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 
-export default function CalculadoraNutricion() {
+export default function CalculadoraNutricion({ navigation }) {
   const [peso, setPeso] = useState("");
   const [altura, setAltura] = useState("");
   const [edad, setEdad] = useState("");
   const [objetivo, setObjetivo] = useState("Mantenimiento");
   const [actividad, setActividad] = useState("Sedentario");
-  const [calorias, setCalorias] = useState(null);
-  const [proteina, setProteina] = useState(null);
 
   const calcular = () => {
     const pesoNum = parseFloat(peso);
@@ -40,14 +38,22 @@ export default function CalculadoraNutricion() {
 
     let proteinaCalculada = pesoNum * (objetivo === "Aumento" ? 2.0 : 1.6);
 
-    setCalorias(caloriasCalculadas.toFixed(2));
-    setProteina(proteinaCalculada.toFixed(2));
+    // Cálculos de macronutrientes
+    const grasasCalculadas = (caloriasCalculadas * 0.25) / 9; // 25% de calorías para grasas
+    const carbohidratosCalculados = (caloriasCalculadas * 0.50) / 4; // 50% de calorías para carbohidratos
+
+    // Navegar a la pantalla de resultados con los datos calculados
+    navigation.navigate("Resultados", {
+      calorias: caloriasCalculadas.toFixed(2),
+      proteina: proteinaCalculada.toFixed(2),
+      grasas: grasasCalculadas.toFixed(2),
+      carbohidratos: carbohidratosCalculados.toFixed(2),
+    });
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <Text style={styles.title}>Calculadora Nutricional</Text>
 
         <Text style={styles.label}>Peso (kg)</Text>
         <TextInput
@@ -89,7 +95,7 @@ export default function CalculadoraNutricion() {
           >
             <Picker.Item label="Mantenimiento del peso" value="Mantenimiento" />
             <Picker.Item label="Aumento de masa muscular" value="Aumento" />
-            <Picker.Item label="Pérdida de peso" value="Pérdida" />
+            <Picker.Item label="Pérdida de grasa" value="Pérdida" />
           </Picker>
         </View>
 
@@ -111,17 +117,6 @@ export default function CalculadoraNutricion() {
         </View>
 
         <Button title="Calcular" onPress={calcular} />
-
-        {calorias && proteina && (
-          <View style={styles.resultados}>
-            <Text style={styles.resultadoText}>
-              Necesitas consumir al día {calorias} calorías 
-            </Text>
-            <Text style={styles.resultadoText}>
-              y {proteina} gramos de proteína.
-            </Text>
-          </View>
-        )}
       </View>
     </TouchableWithoutFeedback>
   );
@@ -129,28 +124,26 @@ export default function CalculadoraNutricion() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#fff",
-    padding: 20,
+    padding: 40,
     borderRadius: 10,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 5,
-    width: "90%",
-    marginVertical: 20,
+    width: "80%",
+    marginHorizontal: 90,
     paddingLeft: 30,
+    marginVertical: 40,
+    paddingHorizontal: 50, // Alejar del borde
+    marginLeft: "10%", // Mueve el contenedor a la derecha
+    Height: "auto",
   },
 
-  title: {
-    fontSize: 22,
-    fontWeight: "bold",
-    marginBottom: 30,
-    textAlign: "center",
-  },
   input: {
     width: "100%",
     borderWidth: 1,
@@ -167,9 +160,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
     textAlign: "left",
     alignSelf: "flex-start",
-     // Cambiar de "right" a "flex-start" para alinear a la izquierda
   },
-  
+
+
   pickerContainer: {
     width: "100%",
     borderWidth: 1,
@@ -182,17 +175,5 @@ const styles = StyleSheet.create({
   },
   picker: {
     width: "100%",
-  },
-  resultados: {
-    alignItems: "center",
-    marginTop:30,
-    padding: 10,
-    backgroundColor: "#f8f8f8",
-    borderRadius: 5,
-  },
-  resultadoText: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#5682f3", 
   },
 });
